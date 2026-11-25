@@ -1,0 +1,203 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User preferences and profile settings for HisaabKitab expense tracker",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "enum": ["both", "roman_urdu", "english"]
+        },
+        "currency": {
+          "type": "string",
+          "enum": ["PKR", "USD", "GBP", "AED", "SAR"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "displayName", "preferredLanguage", "currency", "createdAt", "updatedAt"]
+    },
+    "MonthlyBudget": {
+      "title": "MonthlyBudget",
+      "description": "Monthly salary and budget settings for a specific YYYY-MM month",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "monthKey": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$"
+        },
+        "salary": {
+          "type": "number"
+        },
+        "budgetNote": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["userId", "monthKey", "salary", "budgetNote", "createdAt", "updatedAt"]
+    },
+    "ExpenseEntry": {
+      "title": "ExpenseEntry",
+      "description": "Categorized daily expense entry deducting from monthly balance",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "monthKey": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "number"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["groceries", "utilities", "transport", "dining", "health", "education", "shopping", "other"]
+        },
+        "date": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "paymentMethod": {
+          "type": "string",
+          "enum": ["cash", "bank", "wallet"]
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 250
+        },
+        "groceryItemId": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["userId", "monthKey", "title", "amount", "category", "date", "paymentMethod", "note", "createdAt", "updatedAt"]
+    },
+    "GroceryItem": {
+      "title": "GroceryItem",
+      "description": "Month-long itemized grocery item tracking planned vs consumed quantity",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "monthKey": {
+          "type": "string",
+          "minLength": 7,
+          "maxLength": 7,
+          "pattern": "^[0-9]{4}-[0-9]{2}$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["kg", "g", "litre", "ml", "pack", "dozen", "piece"]
+        },
+        "plannedQty": {
+          "type": "number"
+        },
+        "consumedQty": {
+          "type": "number"
+        },
+        "unitPrice": {
+          "type": "number"
+        },
+        "purchased": {
+          "type": "boolean"
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["userId", "monthKey", "name", "unit", "plannedQty", "consumedQty", "unitPrice", "purchased", "note", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Owner-only user profile and display language preferences"
+    },
+    "/users/{userId}/months/{monthId}": {
+      "schema": { "$ref": "#/entities/MonthlyBudget" },
+      "description": "Monthly salary and budget settings keyed by YYYY-MM"
+    },
+    "/users/{userId}/expenses/{expenseId}": {
+      "schema": { "$ref": "#/entities/ExpenseEntry" },
+      "description": "Daily expense log entries belonging to a user"
+    },
+    "/users/{userId}/groceries/{groceryId}": {
+      "schema": { "$ref": "#/entities/GroceryItem" },
+      "description": "Itemized monthly grocery consumption items belonging to a user"
+    }
+  }
+}

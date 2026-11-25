@@ -1,0 +1,8 @@
+{
+  "name": "HisaabKitab — Roman Urdu & English Expense Tracker",
+  "description": "Mobile-first bilingual Roman Urdu and English monthly salary, daily expense ledger, itemized grocery consumption tracker, and category summary reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
